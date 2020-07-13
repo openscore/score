@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import static java.lang.Boolean.TRUE;
 
@@ -99,7 +100,7 @@ public class ExecutionRuntimeServices implements Serializable {
 
     public static final String ENTERPRISE_MODE = "ENTERPRISE_MODE";
 
-    protected Map<String, Serializable> contextMap = new HashMap<>();
+    protected Map<String, Serializable> contextMap = new UnifiedMap<>();
 
     public ExecutionRuntimeServices() {
     }

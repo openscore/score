@@ -18,9 +18,9 @@ package io.cloudslang.score.lang;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 /**
  * User:
@@ -34,7 +34,7 @@ public class SystemContext extends ExecutionRuntimeServices implements Map<Strin
     }
 
     public SystemContext(Map<? extends String, ? extends Serializable> map) {
-        this.contextMap = new HashMap<>(map);
+        this.contextMap = new UnifiedMap<>(map);
     }
 
     @Override

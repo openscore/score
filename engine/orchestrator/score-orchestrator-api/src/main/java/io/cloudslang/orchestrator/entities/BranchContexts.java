@@ -22,8 +22,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 public class BranchContexts implements Serializable {
     private boolean isBranchCancelled;
@@ -35,8 +35,8 @@ public class BranchContexts implements Serializable {
         Validate.notNull(systemContext);
 
         this.isBranchCancelled = isBranchCancelled;
-        this.contexts = new HashMap<>(contexts);
-        this.systemContext = new HashMap<>(systemContext);
+        this.contexts = new UnifiedMap<>(contexts);
+        this.systemContext = new UnifiedMap<>(systemContext);
     }
 
     public boolean isBranchCancelled() {

@@ -25,8 +25,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 /**
  * A POJO which serves as an holder for the contexts and exception (if exists) of a finished branch
@@ -40,8 +40,8 @@ public class EndBranchDataContainer implements Serializable {
         Validate.notNull(contexts);
         Validate.notNull(systemContext);
 
-        this.contexts = new HashMap<>(contexts);
-        this.systemContext = new HashMap<>(systemContext);
+        this.contexts = new UnifiedMap<>(contexts);
+        this.systemContext = new UnifiedMap<>(systemContext);
         this.exception = exception;
     }
 

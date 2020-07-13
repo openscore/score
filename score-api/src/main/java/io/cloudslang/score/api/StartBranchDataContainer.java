@@ -23,8 +23,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 /**
  * A POJO containing all the data necessary to create a new branch
@@ -44,7 +44,7 @@ public class StartBranchDataContainer implements Serializable{
         this.startPosition = startPosition;
         this.executionPlanId = executionPlanId;
         this.systemContext = new SystemContext(systemContext);
-        this.contexts = new HashMap<>();
+        this.contexts = new UnifiedMap<>();
 
         for (String name : contexts.keySet()) {
             this.contexts.put(name, contexts.get(name));
