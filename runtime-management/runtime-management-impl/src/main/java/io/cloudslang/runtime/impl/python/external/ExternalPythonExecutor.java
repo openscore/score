@@ -279,7 +279,7 @@ public class ExternalPythonExecutor {
     private String generatePayloadForEval(String expression, String prepareEnvironmentScript,
                                        Map<String, Serializable> context) throws JsonProcessingException {
         HashMap<String, Serializable> payload = new HashMap<>(4);
-        payload.put("expression", expression);
+        payload.put("expression", StringUtils.replaceChars(expression, "\n\r", " "));
         payload.put("envSetup", prepareEnvironmentScript);
         payload.put("context", (Serializable) context);
         return objectMapper.writeValueAsString(payload);
