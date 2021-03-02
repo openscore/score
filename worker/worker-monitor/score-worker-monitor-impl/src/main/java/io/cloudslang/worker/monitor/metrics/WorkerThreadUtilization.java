@@ -26,21 +26,21 @@ import java.io.Serializable;
 
 public class WorkerThreadUtilization implements WorkerPerfMetric {
 
-    @Autowired
-    private WorkerManager workerManager;
+	@Autowired
+	private WorkerManager workerManager;
 
-    @Autowired
-    @Qualifier("numberOfExecutionThreads")
-    private int numberOfThreads;
+	@Autowired
+	@Qualifier("numberOfExecutionThreads")
+	private int numberOfThreads;
 
 
-    @Override
-    public Pair<WorkerPerformanceMetric, Serializable> measure() {
-        Pair<WorkerPerformanceMetric, Serializable> threadUtilization = Pair.of(WorkerPerformanceMetric.THREAD_UTILIZATION, getCurrentValue());
-        return threadUtilization;
-    }
+	@Override
+	public Pair<WorkerPerformanceMetric, Serializable> measure() {
+		Pair<WorkerPerformanceMetric, Serializable> threadUtilization = Pair.of(WorkerPerformanceMetric.THREAD_UTILIZATION, getCurrentValue());
+		return threadUtilization;
+	}
 
-    public int getCurrentValue() {
-        return ((workerManager.getRunningTasksCount() * 100) / numberOfThreads);
-    }
+	public int getCurrentValue() {
+		return ((workerManager.getRunningTasksCount() * 100) / numberOfThreads);
+	}
 }

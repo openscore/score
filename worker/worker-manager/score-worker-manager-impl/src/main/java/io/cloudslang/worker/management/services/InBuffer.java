@@ -34,7 +34,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
 import java.util.List;
 
 import static ch.lambdaj.Lambda.extract;

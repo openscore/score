@@ -20,12 +20,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import oshi.SystemInfo;
 import oshi.hardware.GlobalMemory;
 import oshi.software.os.OSProcess;
+
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 
 public class MemoryUtilizationService extends WorkerPerformanceMetricBase {
 
-    private long usedRamProcess;
     private OSProcess process;
     private long totalRam;
 
@@ -39,13 +39,12 @@ public class MemoryUtilizationService extends WorkerPerformanceMetricBase {
 
     @Override
     public Pair<WorkerPerformanceMetric, Serializable> measure() {
-        Pair<WorkerPerformanceMetric, Serializable> memUsage = Pair.of(WorkerPerformanceMetric.MEMORY_USAGE, getCurrentValue());
-        return memUsage;
+        return Pair.of(WorkerPerformanceMetric.MEMORY_USAGE, getCurrentValue());
     }
 
     public double getCurrentValue() {
-        this.usedRamProcess = process.getResidentSetSize();
-        double ramUsed = (double) (usedRamProcess * 100 / totalRam);
+        long usedRamProcess = process.getResidentSetSize();
+        double ramUsed = ((double) usedRamProcess * 100 / totalRam);
         return formatTo2Decimal(ramUsed);
     }
 }

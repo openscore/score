@@ -23,24 +23,24 @@ import javax.annotation.PostConstruct;
 import java.io.Serializable;
 
 public class DiskReadUtilizationService extends WorkerPerformanceMetricBase {
-    private OSProcess process;
+	private OSProcess process;
 
-    @PostConstruct
-    public void init() {
-        this.process = getProcess();
-    }
+	@PostConstruct
+	public void init() {
+		this.process = getProcess();
+	}
 
-    @Override
-    public Pair<WorkerPerformanceMetric, Serializable> measure() {
-        Pair<WorkerPerformanceMetric, Serializable> diskUsage = Pair.of(WorkerPerformanceMetric.DISK_READ_USAGE, getCurrentValue());
-        return diskUsage;
-    }
+	@Override
+	public Pair<WorkerPerformanceMetric, Serializable> measure() {
+		Pair<WorkerPerformanceMetric, Serializable> diskUsage = Pair.of(WorkerPerformanceMetric.DISK_READ_USAGE, getCurrentValue());
+		return diskUsage;
+	}
 
-    public long getCurrentValue() {
-        long readBytes = 0;
-        if (process != null) {
-            readBytes = process.getBytesRead();
-        }
-        return readBytes;
-    }
+	public long getCurrentValue() {
+		long readBytes = 0;
+		if (process != null) {
+			readBytes = process.getBytesRead();
+		}
+		return readBytes;
+	}
 }

@@ -17,26 +17,28 @@ package io.cloudslang.worker.monitor.metrics;
 
 import io.cloudslang.worker.monitor.service.WorkerPerformanceMetric;
 import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.Serializable;
+
 import static java.lang.Runtime.getRuntime;
 
 public class HeapUtilizationService extends WorkerPerformanceMetricBase {
 
-    @Override
-    public Pair<WorkerPerformanceMetric, Serializable> measure() {
-        Pair<WorkerPerformanceMetric, Serializable> heapUsage = Pair.of(WorkerPerformanceMetric.HEAP_SIZE, getCurrentValue());
-        return heapUsage;
-    }
+	@Override
+	public Pair<WorkerPerformanceMetric, Serializable> measure() {
+		Pair<WorkerPerformanceMetric, Serializable> heapUsage = Pair.of(WorkerPerformanceMetric.HEAP_SIZE, getCurrentValue());
+		return heapUsage;
+	}
 
-    public double getCurrentValue() {
-        // Get current size of heap in bytes
-        long totalMemory = Runtime.getRuntime().totalMemory();
-        long freeMemory = getRuntime().freeMemory();
-        double allocatedMemory = totalMemory - freeMemory;
-        long maxMemory = getRuntime().maxMemory();
-        double percentageHeapUsed = (allocatedMemory / formatTo2Decimal(maxMemory)) * 100;
-        return formatTo2Decimal(percentageHeapUsed);
-    }
+	public double getCurrentValue() {
+		// Get current size of heap in bytes
+		long totalMemory = Runtime.getRuntime().totalMemory();
+		long freeMemory = getRuntime().freeMemory();
+		double allocatedMemory = totalMemory - freeMemory;
+		long maxMemory = getRuntime().maxMemory();
+		double percentageHeapUsed = (allocatedMemory / formatTo2Decimal(maxMemory)) * 100;
+		return formatTo2Decimal(percentageHeapUsed);
+	}
 
 
 }

@@ -60,177 +60,175 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = WorkerMetricsServiceImplTest.MyTestConfig.class)
 public class WorkerMetricsServiceImplTest {
 
-    static final String CREDENTIAL_UUID = "uuid";
-    @Autowired
-    private WorkerMetricsService workerMetricsService;
-    @Autowired
-    private PerfMetricCollector perfMetricCollector;
+	static final String CREDENTIAL_UUID = "uuid";
+	@Autowired
+	WorkerStateUpdateService workerStateUpdateService;
+	@Autowired
+	private WorkerMetricsService workerMetricsService;
+	@Autowired
+	private PerfMetricCollector perfMetricCollector;
+	@Autowired
+	private EventBus eventBus;
 
-    @Autowired
-    WorkerStateUpdateService workerStateUpdateService;
+	@Test
+	public void testWorkerMetricCollectorService() throws InterruptedException {
+		Map<WorkerPerformanceMetric, Serializable> metricData = createWorkerPerformanceMetrics();
+		when(perfMetricCollector.collectMetrics()).thenReturn(metricData);
+		workerMetricsService.collectPerformanceMetrics();
+		workerMetricsService.dispatchPerformanceMetrics();
+		verify(eventBus, times(1)).dispatch(anyObject());
+	}
 
-    @Autowired
-    private EventBus eventBus;
+	@Test
+	public void testNoMetricCollectionWhenDisabledFromCentral() throws InterruptedException {
+		reset(perfMetricCollector);
+		when(workerStateUpdateService.isMonitoringDisabled()).thenReturn(true);
+		workerMetricsService.collectPerformanceMetrics();
+		verify(perfMetricCollector, times(0)).collectMetrics();
+	}
 
-    @Test
-    public void testWorkerMetricCollectorService() throws InterruptedException {
-        Map<WorkerPerformanceMetric, Serializable> metricData = createWorkerPerformanceMetrics();
-        when(perfMetricCollector.collectMetrics()).thenReturn(metricData);
-        workerMetricsService.collectPerformanceMetrics();
-        workerMetricsService.dispatchPerformanceMetrics();
-        verify(eventBus, times(1)).dispatch(anyObject());
-    }
+	private Map<WorkerPerformanceMetric, Serializable> createWorkerPerformanceMetrics() {
+		Map<WorkerPerformanceMetric, Serializable> metric1 = new HashMap<WorkerPerformanceMetric, Serializable>();
+		metric1.put(WorkerPerformanceMetric.WORKER_ID, "123");
+		metric1.put(WorkerPerformanceMetric.WORKER_MEASURED_TIME, 1603954121462L);
+		metric1.put(WorkerPerformanceMetric.CPU_USAGE, 32.0);
+		metric1.put(WorkerPerformanceMetric.MEMORY_USAGE, 8.0);
+		metric1.put(WorkerPerformanceMetric.DISK_READ_USAGE, 1101268201L);
+		metric1.put(WorkerPerformanceMetric.DISK_WRITE_USAGE, 11012601L);
+		metric1.put(WorkerPerformanceMetric.THREAD_UTILIZATION, 10);
+		metric1.put(WorkerPerformanceMetric.HEAP_SIZE, 28.0);
+		return metric1;
+	}
 
-    @Test
-    public void testNoMetricCollectionWhenDisabledFromCentral() throws InterruptedException {
-        reset(perfMetricCollector);
-        when(workerStateUpdateService.isMonitoringDisabled()).thenReturn(true);
-        workerMetricsService.collectPerformanceMetrics();
-        verify(perfMetricCollector, times(0)).collectMetrics();
-    }
+	@Configuration
+	public static class MyTestConfig {
 
-    private Map<WorkerPerformanceMetric, Serializable> createWorkerPerformanceMetrics() {
-        Map<WorkerPerformanceMetric, Serializable> metric1 = new HashMap<WorkerPerformanceMetric, Serializable>();
-        metric1.put(WorkerPerformanceMetric.WORKER_ID, "123");
-        metric1.put(WorkerPerformanceMetric.WORKER_MEASURED_TIME, 1603954121462L);
-        metric1.put(WorkerPerformanceMetric.CPU_USAGE, 32.0);
-        metric1.put(WorkerPerformanceMetric.MEMORY_USAGE, 8.0);
-        metric1.put(WorkerPerformanceMetric.DISK_READ_USAGE, 1101268201L);
-        metric1.put(WorkerPerformanceMetric.DISK_WRITE_USAGE, 11012601L);
-        metric1.put(WorkerPerformanceMetric.THREAD_UTILIZATION, 10);
-        metric1.put(WorkerPerformanceMetric.HEAP_SIZE, 28.0);
-        return metric1;
-    }
+		@Bean
+		public WorkerMetricsService workerMetricCollectorService() {
+			return new WorkerMetricsServiceImpl();
+		}
 
-    @Configuration
-    public static class MyTestConfig {
+		@Bean
+		public PerfMetricCollector perfMetricCollector() {
+			return mock(PerfMetricCollector.class);
+		}
 
-        @Bean
-        public WorkerMetricsService workerMetricCollectorService() {
-            return new WorkerMetricsServiceImpl();
-        }
+		@Bean
+		public EventBus eventBus() {
+			return mock(EventBus.class);
+		}
 
-        @Bean
-        public PerfMetricCollector perfMetricCollector() {
-            return mock(PerfMetricCollector.class);
-        }
+		@Bean
+		public CpuUtilizationService cpuUtilizationService() {
+			return mock(CpuUtilizationService.class);
+		}
 
-        @Bean
-        public EventBus eventBus() {
-            return mock(EventBus.class);
-        }
+		@Bean
+		public DiskReadUtilizationService diskReadUtilizationService() {
+			return mock(DiskReadUtilizationService.class);
+		}
 
-        @Bean
-        public CpuUtilizationService cpuUtilizationService() {
-            return mock(CpuUtilizationService.class);
-        }
+		@Bean
+		public DiskWriteUtilizationService diskWriteUtilizationService() {
+			return mock(DiskWriteUtilizationService.class);
+		}
 
-        @Bean
-        public DiskReadUtilizationService diskReadUtilizationService() {
-            return mock(DiskReadUtilizationService.class);
-        }
+		@Bean
+		public MemoryUtilizationService memoryUtilizationService() {
+			return mock(MemoryUtilizationService.class);
+		}
 
-        @Bean
-        public DiskWriteUtilizationService diskWriteUtilizationService() {
-            return mock(DiskWriteUtilizationService.class);
-        }
+		@Bean
+		public HeapUtilizationService heapUtilizationService() {
+			return mock(HeapUtilizationService.class);
+		}
 
-        @Bean
-        public MemoryUtilizationService memoryUtilizationService() {
-            return mock(MemoryUtilizationService.class);
-        }
+		@Bean
+		public WorkerThreadUtilization workerThreadUtilization() {
+			return mock(WorkerThreadUtilization.class);
+		}
 
-        @Bean
-        public HeapUtilizationService heapUtilizationService() {
-            return mock(HeapUtilizationService.class);
-        }
+		@Bean
+		SynchronizationManager synchronizationManager() {
+			return new SynchronizationManagerImpl();
+		}
 
-        @Bean
-        public WorkerThreadUtilization workerThreadUtilization() {
-            return mock(WorkerThreadUtilization.class);
-        }
+		@Bean
+		WorkerManager workerManager() {
+			return new WorkerManager();
+		}
 
-        @Bean
-        SynchronizationManager synchronizationManager() {
-            return new SynchronizationManagerImpl();
-        }
+		@Bean
+		WorkerNodeService workerNodeService() {
+			return mock(WorkerNodeService.class);
+		}
 
-        @Bean
-        WorkerManager workerManager() {
-            return new WorkerManager();
-        }
+		@Bean
+		WorkerConfigurationService workerConfigurationService() {
+			return mock(WorkerConfigurationService.class);
+		}
 
-        @Bean
-        WorkerNodeService workerNodeService() {
-            return mock(WorkerNodeService.class);
-        }
+		@Bean
+		WorkerRecoveryManager workerRecoveryManager() {
+			return mock(WorkerRecoveryManager.class);
+		}
 
-        @Bean
-        WorkerConfigurationService workerConfigurationService() {
-            return mock(WorkerConfigurationService.class);
-        }
+		@Bean
+		Integer numberOfExecutionThreads() {
+			return 2;
+		}
 
-        @Bean
-        WorkerRecoveryManager workerRecoveryManager() {
-            return mock(WorkerRecoveryManager.class);
-        }
+		@Bean
+		Long initStartUpSleep() {
+			return 10L;
+		}
 
-        @Bean
-        Integer numberOfExecutionThreads() {
-            return 2;
-        }
+		@Bean
+		Long maxStartUpSleep() {
+			return 100L;
+		}
 
-        @Bean
-        Long initStartUpSleep() {
-            return 10L;
-        }
+		@Bean
+		WorkerConfigurationUtils workerConfigurationUtils() {
+			WorkerConfigurationUtils workerConfigurationUtils = mock(WorkerConfigurationUtils.class);
+			doReturn(mock(LinkedBlockingQueue.class)).when(workerConfigurationUtils).getBlockingQueue(anyInt(), anyInt());
+			return workerConfigurationUtils;
+		}
 
-        @Bean
-        Long maxStartUpSleep() {
-            return 100L;
-        }
+		@Bean
+		WorkerStateUpdateService workerStateUpdateService() {
+			return mock(WorkerStateUpdateService.class);
+		}
 
-        @Bean
-        WorkerConfigurationUtils workerConfigurationUtils() {
-            WorkerConfigurationUtils workerConfigurationUtils = mock(WorkerConfigurationUtils.class);
-            doReturn(mock(LinkedBlockingQueue.class)).when(workerConfigurationUtils).getBlockingQueue(anyInt(), anyInt());
-            return workerConfigurationUtils;
-        }
+		@Bean
+		Integer inBufferCapacity() {
+			return 20;
+		}
 
-        @Bean
-        WorkerStateUpdateService workerStateUpdateService() {
-            return mock(WorkerStateUpdateService.class);
-        }
+		@Bean
+		WorkerVersionService workerVersionService() {
+			WorkerVersionService service = mock(WorkerVersionService.class);
+			when(service.getWorkerVersion()).thenReturn("version");
+			when(service.getWorkerVersionId()).thenReturn("123");
+			return service;
+		}
 
-        @Bean
-        Integer inBufferCapacity() {
-            return 20;
-        }
+		@Bean
+		EngineVersionService engineVersionService() {
+			EngineVersionService service = mock(EngineVersionService.class);
+			when(service.getEngineVersionId()).thenReturn("123");
+			return service;
+		}
 
-        @Bean
-        WorkerVersionService workerVersionService() {
-            WorkerVersionService service = mock(WorkerVersionService.class);
-            when(service.getWorkerVersion()).thenReturn("version");
-            when(service.getWorkerVersionId()).thenReturn("123");
-            return service;
-        }
+		@Bean
+		String workerUuid() {
+			return CREDENTIAL_UUID;
+		}
 
-        @Bean
-        EngineVersionService engineVersionService() {
-            EngineVersionService service = mock(EngineVersionService.class);
-            when(service.getEngineVersionId()).thenReturn("123");
-            return service;
-        }
+		@Bean
+		public WorkerQueueDetailsContainer workerQueueDetailsContainer() {
+			return mock(WorkerQueueDetailsContainer.class);
+		}
 
-        @Bean
-        String workerUuid() {
-            return CREDENTIAL_UUID;
-        }
-
-        @Bean
-        public WorkerQueueDetailsContainer workerQueueDetailsContainer() {
-            return mock(WorkerQueueDetailsContainer.class);
-        }
-
-    }
+	}
 }

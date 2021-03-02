@@ -28,43 +28,43 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 @ManagedResource(description = "Worker Metrics API")
 public class WorkerMetricsMBean {
 
-    @Autowired
-    private CpuUtilizationService cpuUtilizationService;
-    @Autowired
-    private DiskReadUtilizationService diskReadUtilizationService;
-    @Autowired
-    private MemoryUtilizationService memoryUtilizationService;
-    @Autowired
-    private DiskWriteUtilizationService diskWriteUtilizationService;
-    @Autowired
-    private WorkerManager workerManager;
-    @Autowired
-    @Qualifier("numberOfExecutionThreads")
-    private Integer numberOfThreads;
+	@Autowired
+	private CpuUtilizationService cpuUtilizationService;
+	@Autowired
+	private DiskReadUtilizationService diskReadUtilizationService;
+	@Autowired
+	private MemoryUtilizationService memoryUtilizationService;
+	@Autowired
+	private DiskWriteUtilizationService diskWriteUtilizationService;
+	@Autowired
+	private WorkerManager workerManager;
+	@Autowired
+	@Qualifier("numberOfExecutionThreads")
+	private Integer numberOfThreads;
 
-    @ManagedAttribute(description = "Current Cpu Usage")
-    public double getCpuUsage() {
-        return cpuUtilizationService.getCurrentValue();
-    }
+	@ManagedAttribute(description = "Current Cpu Usage")
+	public double getCpuUsage() {
+		return cpuUtilizationService.getCurrentValue();
+	}
 
-    @ManagedAttribute(description = "Current Memory Usage")
-    public double getMemoryUsage() {
-        return memoryUtilizationService.getCurrentValue();
-    }
+	@ManagedAttribute(description = "Current Memory Usage")
+	public double getMemoryUsage() {
+		return memoryUtilizationService.getCurrentValue();
+	}
 
-    @ManagedAttribute(description = "Current Disk Read Usage")
-    public long getDiskReadUsage() {
-        return diskReadUtilizationService.getCurrentValue();
-    }
+	@ManagedAttribute(description = "Current Disk Read Usage")
+	public long getDiskReadUsage() {
+		return diskReadUtilizationService.getCurrentValue();
+	}
 
-    @ManagedAttribute(description = "Current Disk Write Usage")
-    public long getDiskWriteUsage() {
-        return diskWriteUtilizationService.getCurrentValue();
-    }
+	@ManagedAttribute(description = "Current Disk Write Usage")
+	public long getDiskWriteUsage() {
+		return diskWriteUtilizationService.getCurrentValue();
+	}
 
-    @ManagedAttribute(description = "Running Tasks Count")
-    public double getWorkerThreadsUsage() {
-        return ((double) workerManager.getRunningTasksCount() * 100) / numberOfThreads;
-    }
+	@ManagedAttribute(description = "Running Tasks Count")
+	public double getWorkerThreadsUsage() {
+		return ((double) workerManager.getRunningTasksCount() * 100) / numberOfThreads;
+	}
 
 }

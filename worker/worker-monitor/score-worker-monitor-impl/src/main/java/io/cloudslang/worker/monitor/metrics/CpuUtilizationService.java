@@ -37,7 +37,7 @@ public class CpuUtilizationService extends WorkerPerformanceMetricBase {
 
     @Override
     public Pair<WorkerPerformanceMetric, Serializable> measure() {
-        Pair<WorkerPerformanceMetric, Serializable> cpuUsage = Pair.of(WorkerPerformanceMetric.CPU_USAGE,getCurrentValue());
+        Pair<WorkerPerformanceMetric, Serializable> cpuUsage = Pair.of(WorkerPerformanceMetric.CPU_USAGE, getCurrentValue());
         return cpuUsage;
     }
 

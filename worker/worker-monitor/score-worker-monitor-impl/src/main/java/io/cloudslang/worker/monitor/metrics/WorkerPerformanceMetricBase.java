@@ -25,15 +25,15 @@ import java.math.RoundingMode;
 
 public abstract class WorkerPerformanceMetricBase implements WorkerPerfMetric {
 
-    protected OSProcess getProcess() {
-        SystemInfo systemInfo = new SystemInfo();
-        OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
-        int processId = operatingSystem.getProcessId();
-        OSProcess osProcess = operatingSystem.getProcess(processId);
-        return osProcess;
-    }
+	protected OSProcess getProcess() {
+		SystemInfo systemInfo = new SystemInfo();
+		OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
+		int processId = operatingSystem.getProcessId();
+		OSProcess osProcess = operatingSystem.getProcess(processId);
+		return osProcess;
+	}
 
-    protected double formatTo2Decimal(double value) {
-        return new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
-    }
+	protected double formatTo2Decimal(double value) {
+		return new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+	}
 }

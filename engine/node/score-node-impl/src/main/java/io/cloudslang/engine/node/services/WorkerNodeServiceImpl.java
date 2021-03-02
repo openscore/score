@@ -50,7 +50,7 @@ public class WorkerNodeServiceImpl implements WorkerNodeService {
     private static final Logger logger = LogManager.getLogger(WorkerNodeServiceImpl.class);
 
     private static final long MAX_VERSION_GAP_ALLOWED = Long.getLong("max.allowed.version.gap.worker.recovery", 2);
-    private static boolean disableMonitoring = Boolean.getBoolean("global.worker.monitoring.disable");
+    private static final boolean disableMonitoring = Boolean.getBoolean("global.worker.monitoring.disable");
     private static final String MSG_RECOVERY_VERSION_NAME = "MSG_RECOVERY_VERSION";
 
     @Autowired
@@ -77,9 +77,7 @@ public class WorkerNodeServiceImpl implements WorkerNodeService {
 
         if(disableMonitoring) {
             logger.info("Monitoring is disabled,setting busyness status as not available for all workers");
-            transactionTemplate.executeWithoutResult(transactionStatus -> {
-                readAllWorkersUuids().stream().forEach(uuid -> updateWorkerBusynessValue(uuid,"NA") );
-            });
+            transactionTemplate.executeWithoutResult(transactionStatus -> readAllWorkersUuids().stream().forEach(uuid -> updateWorkerBusynessValue(uuid,"NA") ));
         }
     }
 //readAllWorkersUuids().stream().forEach(uuid -> updateWorkerBusynessValue(uuid,"NA") );
